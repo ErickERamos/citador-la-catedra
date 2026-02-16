@@ -22,7 +22,7 @@ body {
   background-color: var(--color-bg-off-white);
   color: var(--color-rich-black);
   font-family: var(--font-body);
-  font-weight: 300;
+  font-weight: 400;
   font-size: 1rem;
   line-height: 1.7;
 }
@@ -55,11 +55,11 @@ h2, h3, h4, h5, h6 {
   line-height: 1.6;
 }
 
-/* Body Paragraphs: Source Sans 3 Light (300), 16px-18px, 1.7 line-height */
+/* Body Paragraphs: Source Sans 3 regular, 16px-18px, 1.7 line-height */
 p,
 .text-body {
   font-family: var(--font-body);
-  font-weight: 300;
+  font-weight: 400;
   font-size: 1rem;
   line-height: 1.7;
 }
