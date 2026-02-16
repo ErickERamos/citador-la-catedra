@@ -3,7 +3,7 @@
  * Injected on-demand via chrome.scripting.executeScript.
  * Returns a PageMetadata object to the caller.
  *
- * Priority: JSON-LD > Open Graph > Meta Tags > Fallback
+ * Priority: JSON-LD > Open Graph > Meta Tags > Microdata > CMS Patterns > Fallback
  */
 
 interface AuthorInfo {
@@ -75,6 +75,164 @@ interface PageMetadata {
     if (t.includes("blog")) return "blog";
     if (t.includes("webpage") || t.includes("website")) return "webpage";
     return "unknown";
+  }
+
+  // ─── Date Extraction Helpers ───
+
+  const DATE_PATTERNS = {
+    // YYYY-MM-DD or YYYY/MM/DD
+    ISO: /\b(20\d{2})[-/](0[1-9]|1[0-2])[-/](0[1-9]|[12]\d|3[01])\b/,
+    // Spanish: dd de month de yyyy
+    SPANISH: /\b(0?[1-9]|[12]\d|3[01])\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+de\s+(20\d{2})\b/i,
+    // English: Month dd, yyyy
+    ENGLISH: /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(0?[1-9]|[12]\d|3[01]),?\s+(20\d{2})\b/i,
+    // URL pattern: /2023/12/01/ or /2023/12/
+    URL: /\/(20\d{2})\/(0[1-9]|1[0-2])\/(?:(0[1-9]|[12]\d|3[01])\/)?/,
+  };
+
+  const TRIGGER_PHRASES = [
+    "Published:",
+    "Posted:",
+    "Updated:",
+    "Publicado:",
+    "Actualizado:",
+    "Fecha:",
+    "Date:",
+    "Creado:",
+    "Created:",
+  ];
+
+  function extractDateFromUrl(url: string): string | null {
+    const match = url.match(DATE_PATTERNS.URL);
+    if (match) {
+      const year = match[1];
+      const month = match[2];
+      const day = match[3];
+      if (day) return `${year}-${month}-${day}`;
+      return `${year}-${month}`;
+    }
+    return null;
+  }
+
+  function extractDateFromMicrodata(): string | null {
+    // Look for elements with itemprop="datePublished", "dateModified", etc.
+    const itempropCandidates = [
+      "datePublished",
+      "dateModified",
+      "dateCreated",
+      "uploadDate",
+    ];
+
+    for (const prop of itempropCandidates) {
+      const el = document.querySelector(`[itemprop="${prop}"]`);
+      if (el) {
+        const content = el.getAttribute("content") || el.getAttribute("datetime") || el.textContent;
+        if (content) {
+          const trimmed = content.trim();
+          if (DATE_PATTERNS.ISO.test(trimmed)) return trimmed;
+          // Try other patterns if ISO fails
+          if (DATE_PATTERNS.SPANISH.test(trimmed)) return trimmed;
+          if (DATE_PATTERNS.ENGLISH.test(trimmed)) return trimmed;
+        }
+      }
+    }
+    return null;
+  }
+
+  function extractDateFromClasses(): string | null {
+    // Common CMS class names
+    const classCandidates = [
+      ".entry-date",
+      ".published",
+      ".updated",
+      ".post-date",
+      ".date-display-single", // Drupal
+      ".field-name-post-date",
+      "time.entry-date",
+      ".article-date",
+      ".meta-date",
+    ];
+
+    for (const selector of classCandidates) {
+      const el = document.querySelector(selector);
+      if (el) {
+        const content = el.getAttribute("datetime") || el.textContent;
+        if (content) {
+          const trimmed = content.trim();
+          if (DATE_PATTERNS.ISO.test(trimmed)) return trimmed;
+          if (DATE_PATTERNS.SPANISH.test(trimmed)) return trimmed;
+          if (DATE_PATTERNS.ENGLISH.test(trimmed)) return trimmed;
+        }
+      }
+    }
+    return null;
+  }
+
+  function extractDateFromDom(): string | null {
+    // 1. Look for <time> elements
+    const timeElements = document.querySelectorAll("time");
+    for (const time of timeElements) {
+      const datetime = time.getAttribute("datetime");
+      if (datetime) return datetime;
+      if (time.textContent && DATE_PATTERNS.ISO.test(time.textContent)) {
+        return time.textContent.trim();
+      }
+    }
+
+    // 2. Look for elements with class/id containing "date", "publish", "time"
+    // (This is a broader fallback than extractDateFromClasses)
+    const candidates = document.querySelectorAll(
+      '[class*="date"], [class*="publish"], [class*="time"], [id*="date"], [id*="publish"]'
+    );
+    
+    for (const el of candidates) {
+      const text = el.textContent?.trim() || "";
+      // Check for ISO
+      let match = text.match(DATE_PATTERNS.ISO);
+      if (match) return match[0];
+
+      // Check for Spanish
+      match = text.match(DATE_PATTERNS.SPANISH);
+      if (match) return match[0]; // "15 de mayo de 2023"
+
+      // Check for English
+      match = text.match(DATE_PATTERNS.ENGLISH);
+      if (match) return match[0];
+    }
+
+    return null;
+  }
+
+  function extractDateFromText(): string | null {
+    // Scan the first 2000 characters of visible text
+    const bodyText = document.body.innerText.substring(0, 2000);
+    
+    // 1. Check for Trigger Phrases first (more accurate)
+    for (const phrase of TRIGGER_PHRASES) {
+      const regex = new RegExp(`${phrase}\\s*([\\s\\S]{0,50})`, "i");
+      const match = bodyText.match(regex);
+      if (match && match[1]) {
+        const potentialDate = match[1];
+        if (DATE_PATTERNS.ISO.test(potentialDate)) return potentialDate.match(DATE_PATTERNS.ISO)![0];
+        if (DATE_PATTERNS.SPANISH.test(potentialDate)) return potentialDate.match(DATE_PATTERNS.SPANISH)![0];
+        if (DATE_PATTERNS.ENGLISH.test(potentialDate)) return potentialDate.match(DATE_PATTERNS.ENGLISH)![0];
+      }
+    }
+
+    // 2. Fallback to raw pattern matching
+    // ISO
+    let match = bodyText.match(DATE_PATTERNS.ISO);
+    if (match) return match[0];
+
+    // Spanish
+    match = bodyText.match(DATE_PATTERNS.SPANISH);
+    if (match) return match[0];
+
+    // English
+    match = bodyText.match(DATE_PATTERNS.ENGLISH);
+    if (match) return match[0];
+
+    return null;
   }
 
   // ═══════════════════════════════════════════════════
@@ -178,6 +336,19 @@ interface PageMetadata {
     "datePublished",
     getMetaContent("property", "article:published_time") as string
   );
+  if (!metadata.datePublished) {
+     setIfEmpty(
+      "datePublished",
+      getMetaContent("property", "og:published_time") as string
+    );
+  }
+  if (!metadata.datePublished) {
+    setIfEmpty(
+      "datePublished",
+      getMetaContent("property", "article:modified_time") as string
+    );
+  }
+
 
   const ogType = getMetaContent("property", "og:type");
   if (ogType) setIfEmpty("sourceType", mapSourceType(ogType));
@@ -227,6 +398,12 @@ interface PageMetadata {
     "date",
     "DC.date",
     "DC.date.issued",
+    "parsely-pub-date",
+    "sailthru.date",
+    "pubdate",
+    "last-modified",
+    "original-publication-date",
+    "citation_publication_date",
   ];
   for (const dc of dateCandidates) {
     const val = getMetaContent("name", dc);
@@ -243,7 +420,41 @@ interface PageMetadata {
   );
 
   // ═══════════════════════════════════════════════════
-  // LEVEL 4: Fallback
+  // LEVEL 4: Fallback (Microdata, Classes, URL, DOM, Text)
+  // ═══════════════════════════════════════════════════
+  
+  // 4.1 Microdata (itemprop)
+  if (!metadata.datePublished) {
+    const microdataDate = extractDateFromMicrodata();
+    if (microdataDate) setIfEmpty("datePublished", microdataDate);
+  }
+
+  // 4.2 CMS Classes
+  if (!metadata.datePublished) {
+    const classDate = extractDateFromClasses();
+    if (classDate) setIfEmpty("datePublished", classDate);
+  }
+
+  // 4.3 URL Analysis
+  if (!metadata.datePublished) {
+    const urlDate = extractDateFromUrl(window.location.href);
+    if (urlDate) setIfEmpty("datePublished", urlDate);
+  }
+
+  // 4.4 Semantic DOM Elements (General fallback)
+  if (!metadata.datePublished) {
+    const domDate = extractDateFromDom();
+    if (domDate) setIfEmpty("datePublished", domDate);
+  }
+
+  // 4.5 Text Content Regex
+  if (!metadata.datePublished) {
+    const textDate = extractDateFromText();
+    if (textDate) setIfEmpty("datePublished", textDate);
+  }
+
+  // ═══════════════════════════════════════════════════
+  // LEVEL 5: Final Fallbacks
   // ═══════════════════════════════════════════════════
   setIfEmpty("title", document.title);
 
