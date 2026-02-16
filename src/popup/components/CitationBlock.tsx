@@ -84,7 +84,7 @@ export default function CitationBlock({
               ¡Copiado!
             </span>
           ) : (
-            <span className="text-[10px] text-charcoal/40 font-medium bg-white px-1.5 py-0.5 rounded border border-ui-border shadow-sm flex items-center gap-1">
+            <span className="text-[10px] text-charcoal/40 font-medium bg-white px-1.5 py-0.5 rounded border border-action-cyan flex items-center gap-1">
               <svg
                 className="w-3 h-3"
                 fill="none"
@@ -114,7 +114,7 @@ export default function CitationBlock({
             {label}
           </span>
           {badge && (
-            <span className="px-1.5 py-0.5 bg-accent-orange/15 text-accent-orange text-[9px] font-ui font-semibold uppercase rounded">
+            <span className="px-1.5 py-0.5 bg-action-cyan/15 text-accent-orange text-[9px] font-ui font-semibold uppercase rounded">
               {badge}
             </span>
           )}
@@ -126,7 +126,7 @@ export default function CitationBlock({
             border transition-all ${
               copied
                 ? "border-action-cyan bg-action-cyan/10 text-action-cyan copy-success"
-                : "border-ui-border text-charcoal/70 hover:border-action-cyan hover:text-action-cyan"
+                : "border-none text-charcoal/70 hover:border-action-cyan hover:text-action-cyan"
             }`}
         >
           {copied ? (
@@ -153,10 +153,10 @@ export default function CitationBlock({
 
       <div
         onClick={handleCopy}
-        className={`bg-white rounded-md border p-3 cursor-pointer transition-colors group relative ${
+        className={`rounded-md border p-3 cursor-pointer transition-colors group relative ${
           copied
             ? "border-action-cyan bg-action-cyan/5"
-            : "border-ui-border hover:border-action-cyan/50 hover:bg-ui-background/30"
+            : "border-bg-off-white hover:border-action-cyan/50 hover:bg-action-cyan/20"
         }`}
         title="Haz clic para copiar"
       >
@@ -173,11 +173,11 @@ export default function CitationBlock({
 
         {/* Hover overlay hint */}
         <div
-          className={`absolute inset-0 flex items-center justify-center bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${
+          className={`absolute inset-0 flex items-center justify-center bg-action-cyan/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${
             copied ? "hidden" : ""
           }`}
         >
-          <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md shadow-sm border border-ui-border flex items-center gap-1.5">
+          <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md border border-action-cyan flex items-center gap-1.5">
             <svg
               className="w-3.5 h-3.5"
               fill="none"
