@@ -22,7 +22,19 @@ export default function CitationBlock({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(plainText);
+      // When HTML is available, copy both formats so Word preserves italics
+      if (html && navigator.clipboard?.write) {
+        const htmlBlob = new Blob(
+          [`<html><head><meta charset="utf-8"></head><body><p>${html}</p></body></html>`],
+          { type: "text/html" }
+        );
+        const textBlob = new Blob([plainText], { type: "text/plain" });
+        await navigator.clipboard.write([
+          new ClipboardItem({ "text/html": htmlBlob, "text/plain": textBlob }),
+        ]);
+      } else {
+        await navigator.clipboard.writeText(plainText);
+      }
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -55,7 +67,7 @@ export default function CitationBlock({
           <span className="font-brand font-bold text-charcoal/60 text-[10px] whitespace-nowrap min-w-[70px]">
             {label}
           </span>
-          <p className="citation-text text-[13px] text-rich-black truncate font-medium flex-1">
+          <p className="citation-text text-[13px] text-rich-black truncate flex-1">
             {plainText}
           </p>
         </div>
