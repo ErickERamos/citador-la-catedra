@@ -42,9 +42,21 @@ async function handleExtraction() {
   }
 
   try {
-    const results = await chrome.scripting.executeScript({
+    // Step 1: Inject the extractor script (stores result on window.__citadorResult)
+    await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       files: ["content/extractor.js"],
+    });
+
+    // Step 2: Read the stored result
+    const results = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: () => {
+        const w = window as unknown as Record<string, unknown>;
+        const result = w.__citadorResult;
+        delete w.__citadorResult;
+        return result;
+      },
     });
 
     if (results && results[0]?.result) {

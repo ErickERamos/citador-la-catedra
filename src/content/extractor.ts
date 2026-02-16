@@ -22,7 +22,7 @@ interface PageMetadata {
   sourceType: SourceType;
 }
 
-(function extractMetadata(): PageMetadata {
+(function extractMetadata(): void {
   const metadata: PageMetadata = {
     title: "",
     authors: [],
@@ -262,5 +262,7 @@ interface PageMetadata {
     metadata.sourceType = "webpage";
   }
 
-  return metadata;
+  // Store result on window so the background worker can read it
+  // via a separate chrome.scripting.executeScript({ func }) call.
+  (window as unknown as Record<string, unknown>).__citadorResult = metadata;
 })();
