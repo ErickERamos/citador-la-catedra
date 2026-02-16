@@ -66,7 +66,7 @@ export default function CitationBlock({
             copied ? "hidden" : ""
           } group-hover:text-action-cyan`}
         >
-          <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md border border-action-cyan flex items-center gap-1.5 shadow-sm">
+          <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md border border-action-cyan flex items-center gap-1.5">
             <svg
               className="w-3.5 h-3.5"
               fill="none"
@@ -90,7 +90,7 @@ export default function CitationBlock({
             copied ? "opacity-100" : "hidden"
           }`}
         >
-           <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md shadow-sm border border-action-cyan flex items-center gap-1.5">
+           <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md border border-action-cyan flex items-center gap-1.5">
             <svg
               className="w-3.5 h-3.5"
               fill="none"
@@ -119,7 +119,7 @@ export default function CitationBlock({
             {label}
           </span>
           {badge && (
-            <span className="px-1.5 py-0.5 bg-accent-orange/15 text-accent-orange text-[9px] font-ui font-semibold uppercase rounded">
+            <span className="px-1.5 py-0.5 bg-action-cyan/15 text-action-cyan text-[9px] font-ui font-semibold uppercase rounded">
               {badge}
             </span>
           )}
@@ -131,7 +131,7 @@ export default function CitationBlock({
             border transition-all ${
               copied
                 ? "border-action-cyan bg-action-cyan/10 text-action-cyan copy-success"
-                : "border-ui-border text-charcoal/70 hover:border-action-cyan hover:text-action-cyan"
+                : "border-bg-off-white text-charcoal/70 hover:border-action-cyan hover:text-action-cyan"
             }`}
         >
           {copied ? (
@@ -182,7 +182,7 @@ export default function CitationBlock({
             copied ? "hidden" : ""
           } group-hover:text-action-cyan`}
         >
-          <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md border border-action-cyan flex items-center gap-1.5 shadow-sm">
+          <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md border border-action-cyan flex items-center gap-1.5">
             <svg
               className="w-3.5 h-3.5"
               fill="none"
@@ -206,7 +206,7 @@ export default function CitationBlock({
             copied ? "opacity-100" : "hidden"
           }`}
         >
-           <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md shadow-sm border border-action-cyan flex items-center gap-1.5">
+           <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md border border-action-cyan flex items-center gap-1.5">
             <svg
               className="w-3.5 h-3.5"
               fill="none"

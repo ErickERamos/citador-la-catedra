@@ -25,7 +25,7 @@ export default function CiteView({
 
       {/* Reference list entry */}
       <CitationBlock
-        label="Entrada de lista de referencias"
+        label="Referencia"
         badge="APA 7"
         plainText={citation.referenceList}
         html={citation.referenceListHtml}

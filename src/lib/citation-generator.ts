@@ -114,9 +114,9 @@ export class CitationGenerator {
        }
     }
 
-    // URL
+    // URL - Render as text, not as a link
     segment5 = ` ${url}`;
-    segment5H = ` <a href="${this.escapeHtml(url)}" target="_blank" rel="noopener">${this.escapeHtml(url)}</a>`;
+    segment5H = ` ${this.escapeHtml(url)}`;
 
     const referenceList = (segment1 + segment2 + segment3 + segment4 + segment5).trim();
     const referenceListHtml = (segment1H + segment2H + segment3H + segment4H + segment5H).trim();
