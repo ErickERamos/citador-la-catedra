@@ -32,6 +32,40 @@ interface PageMetadata {
     sourceType: "unknown",
   };
 
+  // ─── Helper: Clean title string ───
+  function cleanTitle(title: string): string {
+    if (!title) return "";
+    let cleaned = title.trim();
+
+    // 1. Remove common file type prefixes/suffixes
+    // Matches: [PDF], (PDF), [DOC], (DOC), etc. at start
+    cleaned = cleaned.replace(/^\[(PDF|DOC|DOCX|XLS|XLSX|PPT|PPTX)\]\s*/i, "");
+    cleaned = cleaned.replace(/^\((PDF|DOC|DOCX|XLS|XLSX|PPT|PPTX)\)\s*/i, "");
+
+    // 2. Remove site name suffixes
+    // Matches: " - SiteName", " | SiteName", " : SiteName" at end
+    // We look for a separator followed by text at the end of the string
+    // Be careful not to cut off valid parts of titles that use these separators
+    const separators = [" | ", " - ", " : ", " — ", " » "];
+    for (const sep of separators) {
+      if (cleaned.includes(sep)) {
+        const parts = cleaned.split(sep);
+        // If we have multiple parts, the last one is likely the site name
+        // Heuristic: If the last part is short (< 30 chars) or matches known site name patterns, drop it
+        if (parts.length > 1) {
+          const lastPart = parts[parts.length - 1];
+          // Simple heuristic: if the last part is significantly shorter than the rest, it's likely a suffix
+          // Or if it matches the domain name
+          if (lastPart.length < 40) {
+             cleaned = parts.slice(0, -1).join(sep);
+          }
+        }
+      }
+    }
+
+    return cleaned.trim();
+  }
+
   // ─── Helper: only set if field is still empty ───
   function setIfEmpty<K extends keyof PageMetadata>(
     key: K,
@@ -45,6 +79,13 @@ interface PageMetadata {
       if (metadata.sourceType === "unknown" && value !== "unknown") {
         metadata.sourceType = value as SourceType;
       }
+    } else if (key === "title") {
+       // Apply cleaning to title before setting
+       const cleanedValue = typeof value === "string" ? cleanTitle(value) : value;
+       if (!metadata.title && cleanedValue) {
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         (metadata as any)[key] = cleanedValue;
+       }
     } else {
       if (!metadata[key] && value) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
