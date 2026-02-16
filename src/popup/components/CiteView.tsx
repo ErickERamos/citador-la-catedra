@@ -39,6 +39,12 @@ export default function CiteView({
         label="Cita parentética"
         plainText={citation.parenthetical}
       />
+
+      {/* Narrative citation */}
+      <CitationBlock
+        label="Cita narrativa"
+        plainText={citation.narrative}
+      />
     </div>
   );
 }

@@ -165,7 +165,10 @@ export class CitationGenerator {
     const yearStr = year || "s.f.";
     const parenthetical = `(${parentheticalAuthor}, ${yearStr})`;
 
-    return { referenceList, referenceListHtml, parenthetical };
+    // ─── Narrative citation ───
+    const narrative = `${parentheticalAuthor} (${yearStr})`;
+
+    return { referenceList, referenceListHtml, parenthetical, narrative };
   }
 
   // ─── Helpers ───

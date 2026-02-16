@@ -23,6 +23,8 @@ export interface CitationResult {
   referenceListHtml: string;
   /** Parenthetical in-text citation, e.g. "(Apellido, 2024)" */
   parenthetical: string;
+  /** Narrative in-text citation, e.g. "Apellido (2024)" */
+  narrative: string;
 }
 
 export interface ExtractMessage {
