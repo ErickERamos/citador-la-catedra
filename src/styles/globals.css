@@ -17,15 +17,15 @@
 /* Extension popup global styles */
 html,
 body {
-  width: 420px;
-  min-height: 300px;
+  width: 600px;
+  height: 600px;
   margin: 0;
   padding: 0;
   background-color: var(--color-bg-off-white);
   color: var(--color-rich-black);
   font-family: var(--font-body);
-  font-weight: 300;
-  font-size: 14px;
+  font-weight: 400;
+  font-size: 16px;
   line-height: 1.6;
 }
 
@@ -45,8 +45,8 @@ body {
 
 .text-ui {
   font-family: var(--font-ui);
-  font-weight: 600;
-  font-size: 0.7rem;
+  font-weight: 700;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -54,7 +54,7 @@ body {
 /* Citation block italic title rendering */
 .citation-text em {
   font-family: var(--font-brand);
-  font-weight: 400;
+  font-weight: 600;
   font-style: italic;
 }
 
