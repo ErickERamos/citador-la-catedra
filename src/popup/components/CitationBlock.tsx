@@ -44,10 +44,10 @@ export default function CitationBlock({
     return (
       <div
         onClick={handleCopy}
-        className={`group flex items-center justify-between p-2 rounded-md cursor-pointer transition-all border ${
+        className={`group relative flex items-center justify-between p-3 rounded-md cursor-pointer transition-colors border ${
           copied
             ? "border-action-cyan bg-action-cyan/5"
-            : "border-transparent hover:bg-ui-background hover:border-ui-border"
+            : "border-bg-off-white hover:border-action-cyan/50 hover:bg-action-cyan/20"
         }`}
         title="Haz clic para copiar"
       >
@@ -60,47 +60,52 @@ export default function CitationBlock({
           </p>
         </div>
 
-        {/* Copy indicator - only visible on hover or when copied */}
+        {/* Hover overlay hint - Right aligned */}
         <div
-          className={`ml-3 flex-shrink-0 transition-opacity duration-200 ${
-            copied ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          className={`absolute inset-0 flex items-center justify-end pr-3 bg-action-cyan/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-md ${
+            copied ? "hidden" : ""
+          } group-hover:text-action-cyan`}
+        >
+          <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md border border-action-cyan flex items-center gap-1.5 shadow-sm">
+            <svg
+              className="w-3.5 h-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+              />
+            </svg>
+            Copiar
+          </span>
+        </div>
+        
+        {/* Copied feedback overlay - Right aligned */}
+         <div
+          className={`absolute inset-0 flex items-center justify-end pr-3 bg-action-cyan/10 opacity-0 transition-opacity pointer-events-none rounded-md ${
+            copied ? "opacity-100" : "hidden"
           }`}
         >
-          {copied ? (
-            <span className="text-[10px] font-bold text-action-cyan flex items-center gap-1">
-              <svg
-                className="w-3.5 h-3.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              ¡Copiado!
-            </span>
-          ) : (
-            <span className="text-[10px] text-charcoal/40 font-medium bg-white px-1.5 py-0.5 rounded border border-action-cyan flex items-center gap-1">
-              <svg
-                className="w-3 h-3"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                />
-              </svg>
-              Copiar
-            </span>
-          )}
+           <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md shadow-sm border border-action-cyan flex items-center gap-1.5">
+            <svg
+              className="w-3.5 h-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            ¡Copiado!
+          </span>
         </div>
       </div>
     );
@@ -114,19 +119,19 @@ export default function CitationBlock({
             {label}
           </span>
           {badge && (
-            <span className="px-1.5 py-0.5 bg-action-cyan/15 text-accent-orange text-[9px] font-ui font-semibold uppercase rounded">
+            <span className="px-1.5 py-0.5 bg-accent-orange/15 text-accent-orange text-[9px] font-ui font-semibold uppercase rounded">
               {badge}
             </span>
           )}
         </div>
-        {/* We rely on the card click for copy, but keep button for accessibility/clarity */}
+        
         <button
           onClick={handleCopy}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-ui text-[10px] cursor-pointer
             border transition-all ${
               copied
                 ? "border-action-cyan bg-action-cyan/10 text-action-cyan copy-success"
-                : "border-none text-charcoal/70 hover:border-action-cyan hover:text-action-cyan"
+                : "border-ui-border text-charcoal/70 hover:border-action-cyan hover:text-action-cyan"
             }`}
         >
           {copied ? (
@@ -173,11 +178,11 @@ export default function CitationBlock({
 
         {/* Hover overlay hint */}
         <div
-          className={`absolute inset-0 flex items-center justify-center bg-action-cyan/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${
+          className={`absolute inset-0 flex items-center justify-center bg-action-cyan/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-md ${
             copied ? "hidden" : ""
-          }`}
+          } group-hover:text-action-cyan`}
         >
-          <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md border border-action-cyan flex items-center gap-1.5">
+          <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md border border-action-cyan flex items-center gap-1.5 shadow-sm">
             <svg
               className="w-3.5 h-3.5"
               fill="none"
@@ -192,6 +197,30 @@ export default function CitationBlock({
               />
             </svg>
             Copiar
+          </span>
+        </div>
+        
+        {/* Copied feedback overlay */}
+         <div
+          className={`absolute inset-0 flex items-center justify-center bg-action-cyan/10 opacity-0 transition-opacity pointer-events-none rounded-md ${
+            copied ? "opacity-100" : "hidden"
+          }`}
+        >
+           <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md shadow-sm border border-action-cyan flex items-center gap-1.5">
+            <svg
+              className="w-3.5 h-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            ¡Copiado!
           </span>
         </div>
       </div>
