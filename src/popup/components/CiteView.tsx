@@ -29,21 +29,24 @@ export default function CiteView({
         badge="APA 7"
         plainText={citation.referenceList}
         html={citation.referenceListHtml}
+        variant="card"
       />
 
       {/* Divider */}
       <hr className="border-ui-border" />
 
-      {/* In-text citations side-by-side */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* In-text citations (list rows) */}
+      <div className="space-y-1">
         <CitationBlock
-          label="Cita parentética"
+          label="Parentética"
           plainText={citation.parenthetical}
+          variant="row"
         />
 
         <CitationBlock
-          label="Cita narrativa"
+          label="Narrativa"
           plainText={citation.narrative}
+          variant="row"
         />
       </div>
     </div>

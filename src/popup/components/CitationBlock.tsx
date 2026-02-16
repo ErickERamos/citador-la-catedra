@@ -1,5 +1,4 @@
 import { useState } from "react";
-import CopyButton from "./CopyButton";
 
 interface CitationBlockProps {
   label: string;
@@ -8,6 +7,8 @@ interface CitationBlockProps {
   plainText: string;
   /** HTML version for display (optional, falls back to plainText) */
   html?: string;
+  /** Display variant: 'card' (default) or 'row' */
+  variant?: "card" | "row";
 }
 
 export default function CitationBlock({
@@ -15,6 +16,7 @@ export default function CitationBlock({
   badge,
   plainText,
   html,
+  variant = "card",
 }: CitationBlockProps) {
   const [copied, setCopied] = useState(false);
 
@@ -38,6 +40,72 @@ export default function CitationBlock({
     }
   };
 
+  if (variant === "row") {
+    return (
+      <div
+        onClick={handleCopy}
+        className={`group flex items-center justify-between p-2 rounded-md cursor-pointer transition-all border ${
+          copied
+            ? "border-action-cyan bg-action-cyan/5"
+            : "border-transparent hover:bg-ui-background hover:border-ui-border"
+        }`}
+        title="Haz clic para copiar"
+      >
+        <div className="flex items-center gap-3 overflow-hidden flex-1">
+          <span className="font-brand font-bold text-charcoal/60 text-[10px] whitespace-nowrap min-w-[70px]">
+            {label}
+          </span>
+          <p className="citation-text text-[13px] text-rich-black truncate font-medium flex-1">
+            {plainText}
+          </p>
+        </div>
+
+        {/* Copy indicator - only visible on hover or when copied */}
+        <div
+          className={`ml-3 flex-shrink-0 transition-opacity duration-200 ${
+            copied ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          }`}
+        >
+          {copied ? (
+            <span className="text-[10px] font-bold text-action-cyan flex items-center gap-1">
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              ¡Copiado!
+            </span>
+          ) : (
+            <span className="text-[10px] text-charcoal/40 font-medium bg-white px-1.5 py-0.5 rounded border border-ui-border shadow-sm flex items-center gap-1">
+              <svg
+                className="w-3 h-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
+              </svg>
+              Copiar
+            </span>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
@@ -51,7 +119,36 @@ export default function CitationBlock({
             </span>
           )}
         </div>
-        <CopyButton onClick={handleCopy} copied={copied} />
+        {/* We rely on the card click for copy, but keep button for accessibility/clarity */}
+        <button
+          onClick={handleCopy}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-ui text-[10px] cursor-pointer
+            border transition-all ${
+              copied
+                ? "border-action-cyan bg-action-cyan/10 text-action-cyan copy-success"
+                : "border-ui-border text-charcoal/70 hover:border-action-cyan hover:text-action-cyan"
+            }`}
+        >
+          {copied ? (
+            <>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              ¡Copiado!
+            </>
+          ) : (
+            <>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
+              </svg>
+              Copiar
+            </>
+          )}
+        </button>
       </div>
 
       <div
@@ -73,12 +170,29 @@ export default function CitationBlock({
             {plainText}
           </p>
         )}
-        
+
         {/* Hover overlay hint */}
-        <div className={`absolute inset-0 flex items-center justify-center bg-white/80 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${copied ? "hidden" : ""}`}>
-           <span className="text-xs font-semibold text-action-cyan bg-white px-2 py-1 rounded shadow-sm border border-ui-border">
-             Copiar
-           </span>
+        <div
+          className={`absolute inset-0 flex items-center justify-center bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${
+            copied ? "hidden" : ""
+          }`}
+        >
+          <span className="text-xs font-semibold text-action-cyan bg-white px-3 py-1.5 rounded-md shadow-sm border border-ui-border flex items-center gap-1.5">
+            <svg
+              className="w-3.5 h-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+              />
+            </svg>
+            Copiar
+          </span>
         </div>
       </div>
     </div>
