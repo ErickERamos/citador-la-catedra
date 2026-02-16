@@ -1,3 +1,4 @@
+import { useState } from "react";
 import CopyButton from "./CopyButton";
 
 interface CitationBlockProps {
@@ -15,6 +16,28 @@ export default function CitationBlock({
   plainText,
   html,
 }: CitationBlockProps) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(plainText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Fallback for older environments
+      const textarea = document.createElement("textarea");
+      textarea.value = plainText;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
@@ -28,10 +51,18 @@ export default function CitationBlock({
             </span>
           )}
         </div>
-        <CopyButton text={plainText} />
+        <CopyButton onClick={handleCopy} copied={copied} />
       </div>
 
-      <div className="bg-white rounded-md border border-ui-border p-3">
+      <div
+        onClick={handleCopy}
+        className={`bg-white rounded-md border p-3 cursor-pointer transition-colors group relative ${
+          copied
+            ? "border-action-cyan bg-action-cyan/5"
+            : "border-ui-border hover:border-action-cyan/50 hover:bg-ui-background/30"
+        }`}
+        title="Haz clic para copiar"
+      >
         {html ? (
           <p
             className="citation-text text-[13px] text-rich-black leading-relaxed break-words"
@@ -42,6 +73,13 @@ export default function CitationBlock({
             {plainText}
           </p>
         )}
+        
+        {/* Hover overlay hint */}
+        <div className={`absolute inset-0 flex items-center justify-center bg-white/80 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${copied ? "hidden" : ""}`}>
+           <span className="text-xs font-semibold text-action-cyan bg-white px-2 py-1 rounded shadow-sm border border-ui-border">
+             Copiar
+           </span>
+        </div>
       </div>
     </div>
   );

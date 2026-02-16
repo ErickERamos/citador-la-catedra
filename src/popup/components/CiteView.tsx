@@ -34,17 +34,18 @@ export default function CiteView({
       {/* Divider */}
       <hr className="border-ui-border" />
 
-      {/* Parenthetical citation */}
-      <CitationBlock
-        label="Cita parentética"
-        plainText={citation.parenthetical}
-      />
+      {/* In-text citations side-by-side */}
+      <div className="grid grid-cols-2 gap-4">
+        <CitationBlock
+          label="Cita parentética"
+          plainText={citation.parenthetical}
+        />
 
-      {/* Narrative citation */}
-      <CitationBlock
-        label="Cita narrativa"
-        plainText={citation.narrative}
-      />
+        <CitationBlock
+          label="Cita narrativa"
+          plainText={citation.narrative}
+        />
+      </div>
     </div>
   );
 }

@@ -1,36 +1,16 @@
-import { useState } from "react";
-
 interface CopyButtonProps {
-  text: string;
+  onClick: () => void;
+  copied: boolean;
   label?: string;
 }
 
-export default function CopyButton({ text, label = "Copiar" }: CopyButtonProps) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Fallback for older environments
-      const textarea = document.createElement("textarea");
-      textarea.value = text;
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textarea);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
+export default function CopyButton({ onClick, copied, label = "Copiar" }: CopyButtonProps) {
   return (
     <button
-      onClick={handleCopy}
+      onClick={(e) => {
+        e.stopPropagation(); // Prevent triggering parent click if any
+        onClick();
+      }}
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-ui text-[10px] cursor-pointer
         border transition-all ${
           copied
