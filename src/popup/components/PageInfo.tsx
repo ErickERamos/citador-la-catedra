@@ -22,7 +22,7 @@ export default function PageInfo({ title, sourceType }: PageInfoProps) {
       >
         {title}
       </h2>
-      <span className="inline-block mt-1.5 px-2 py-0.5 bg-accent-orange/15 text-accent-orange text-ui rounded">
+      <span className="inline-block mt-1.5 px-2 py-0.5 bg-action-cyan/15 text-action-cyan text-ui rounded">
         {sourceTypeLabels[sourceType]}
       </span>
     </div>
