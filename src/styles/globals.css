@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-blue: #214066;
+  --color-action-cyan: #46c6e6;
+  --color-accent-orange: #ffa445;
+  --color-bg-off-white: #f9fafb;
+  --color-ui-border: #e5e7eb;
+  --color-rich-black: #07101a;
+  --color-charcoal: #26272d;
+
+  --font-brand: "Lora", Georgia, serif;
+  --font-body: "Source Sans 3", system-ui, sans-serif;
+  --font-ui: "Source Sans 3", system-ui, sans-serif;
+}
+
+/* Extension popup global styles */
+html,
+body {
+  width: 420px;
+  min-height: 300px;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg-off-white);
+  color: var(--color-rich-black);
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+/* Typography utilities */
+.font-brand {
+  font-family: var(--font-brand);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.text-ui {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Citation block italic title rendering */
+.citation-text em {
+  font-family: var(--font-brand);
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Tab underline animation (from lacatedra.org nav-link) */
+.tab-link {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.tab-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 3px;
+  background-color: var(--color-action-cyan);
+  transition: width 0.3s ease;
+}
+
+.tab-link:hover::after,
+.tab-link.active::after {
+  width: 100%;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-off-white);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-blue);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-action-cyan);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-blue) var(--color-bg-off-white);
+}
+
+/* Copy button animation */
+.copy-success {
+  animation: copyFlash 0.4s ease-out;
+}
+
+@keyframes copyFlash {
+  0% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

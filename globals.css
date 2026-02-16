@@ -1,0 +1,200 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-blue: #214066;
+  --color-action-cyan: #46c6e6;
+  --color-accent-orange: #ffa445;
+  --color-bg-off-white: #f9fafb;
+  --color-ui-border: #e5e7eb;
+  --color-rich-black: #07101a;
+  --color-charcoal: #26272d;
+
+  --font-brand: "Lora", Georgia, serif;
+  --font-body: var(--font-source-sans), system-ui, sans-serif;
+  --font-ui: var(--font-source-sans), system-ui, sans-serif;
+}
+
+/* Global Styles for Editorial Look */
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background-color: var(--color-bg-off-white);
+  color: var(--color-rich-black);
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* ==========================================
+   Typography System
+   ========================================== */
+
+/* H1 Headline: Lora Bold (700), 36px-48px */
+h1 {
+  font-family: var(--font-brand);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  line-height: 1.1;
+}
+
+/* H2-H6: Lora with appropriate weights */
+h2, h3, h4, h5, h6 {
+  font-family: var(--font-brand);
+  font-weight: 700;
+}
+
+/* Intro/Summary: Lora Regular Italic, 20px */
+.text-intro,
+.text-summary {
+  font-family: var(--font-brand);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+/* Body Paragraphs: Source Sans 3 Light (300), 16px-18px, 1.7 line-height */
+p,
+.text-body {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* UI Menus: Source Sans 3 SemiBold (600), 12px, All Caps */
+.text-menu,
+nav a {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Filters/Tags: Source Sans 3 Medium (500), 12px, Uppercase */
+.text-tag,
+.text-filter {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Font Family Utilities */
+.font-brand {
+  font-family: var(--font-brand);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-action {
+  font-family: var(--font-action);
+}
+
+/* Button/Input base styling */
+button, input, label, .ui-text {
+  font-family: var(--font-ui);
+}
+
+/* ==========================================
+   Navigation Link Animation
+   ========================================== */
+
+/* Shared nav link style with underline animation */
+.nav-link {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 4px;
+  background-color: var(--color-action-cyan);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* ==========================================
+   Flip Card 3D Animation
+   ========================================== */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Safari */
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+@layer utilities {
+  .container-editorial {
+    @apply max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .animate-float {
+    animation: float 18s ease-in-out infinite;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* ==========================================
+   Custom Scrollbar
+   ========================================== */
+
+/* WebKit (Chrome, Safari, etc.) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-off-white);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-blue);
+  border-radius: 5px;
+  border: 2px solid var(--color-bg-off-white);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-action-cyan);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: medium;
+  scrollbar-color: var(--color-primary-blue) var(--color-bg-off-white);
+}
