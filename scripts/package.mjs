@@ -28,10 +28,6 @@ try {
   console.log("🔨 Running build...");
   execSync("npm run build", { stdio: "inherit", cwd: rootDir });
 
-  // Generate icons if missing
-  console.log("🎨 Ensuring icons exist...");
-  execSync("node scripts/generate-icons.mjs", { stdio: "inherit", cwd: rootDir });
-
   // Create ZIP using bestzip
   console.log(`🤐 Zipping to ${zipName}...`);
   // Use npx bestzip to zip the contents of dist
