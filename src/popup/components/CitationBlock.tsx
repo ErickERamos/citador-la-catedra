@@ -25,7 +25,9 @@ export default function CitationBlock({
       // When HTML is available, copy both formats so Word preserves italics
       if (html && navigator.clipboard?.write) {
         const htmlBlob = new Blob(
-          [`<html><head><meta charset="utf-8"></head><body><p>${html}</p></body></html>`],
+          [
+            `<html><head><meta charset="utf-8"><style>body,p{font-family:'Source Sans 3',system-ui,sans-serif;font-weight:400;} em{font-style:italic;font-weight:400;}</style></head><body><p>${html}</p></body></html>`,
+          ],
           { type: "text/html" }
         );
         const textBlob = new Blob([plainText], { type: "text/plain" });

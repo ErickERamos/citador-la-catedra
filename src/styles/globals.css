@@ -51,10 +51,14 @@ body {
   letter-spacing: 0.05em;
 }
 
-/* Citation block italic title rendering */
+/* Citation block: same typography (sans-serif), normal weight, italic where needed */
+.citation-text {
+  font-family: var(--font-body);
+  font-weight: 400;
+}
 .citation-text em {
-  font-family: var(--font-brand);
-  font-weight: 600;
+  font-family: var(--font-body);
+  font-weight: 400;
   font-style: italic;
 }
 
