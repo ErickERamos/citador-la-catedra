@@ -127,47 +127,15 @@ export default function CitationBlock({
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="font-brand font-bold text-rich-black text-xs">
-            {label}
+      <div className="flex items-center gap-2">
+        <span className="font-brand font-bold text-rich-black text-xs">
+          {label}
+        </span>
+        {badge && (
+          <span className="px-1.5 py-0.5 bg-action-cyan/15 text-action-cyan text-[9px] font-ui font-semibold uppercase rounded">
+            {badge}
           </span>
-          {badge && (
-            <span className="px-1.5 py-0.5 bg-action-cyan/15 text-action-cyan text-[9px] font-ui font-semibold uppercase rounded">
-              {badge}
-            </span>
-          )}
-        </div>
-        
-        <button
-          onClick={handleCopy}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs cursor-pointer
-            border transition-all ${
-              copied
-                ? "border-action-cyan bg-action-cyan/10 text-action-cyan copy-success"
-                : "border-bg-off-white text-charcoal/70 hover:border-action-cyan hover:text-action-cyan"
-            }`}
-        >
-          {copied ? (
-            <>
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              ¡Copiado!
-            </>
-          ) : (
-            <>
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                />
-              </svg>
-              Copiar
-            </>
-          )}
-        </button>
+        )}
       </div>
 
       <div

@@ -8,6 +8,7 @@ import { CitationGenerator } from "../lib/citation-generator";
 import Header from "./components/Header";
 import PageInfo from "./components/PageInfo";
 import TabSwitcher from "./components/TabSwitcher";
+import AuthorToggle from "./components/AuthorToggle";
 import CiteView from "./components/CiteView";
 import EditView from "./components/EditView";
 
@@ -98,15 +99,18 @@ export default function App() {
         <>
           <PageInfo title={metadata.title} sourceType={metadata.sourceType} />
 
-          <TabSwitcher activeTab={activeTab} onTabChange={setActiveTab} />
+          <div className="flex items-center border-b border-ui-border px-4 gap-4">
+            <TabSwitcher activeTab={activeTab} onTabChange={setActiveTab} />
+            <div className="ml-auto">
+              <AuthorToggle mode={authorMode} onChange={handleAuthorModeChange} />
+            </div>
+          </div>
 
           <div className="flex-1 overflow-y-auto">
             {activeTab === "citar" && citation && (
               <CiteView
                 citation={citation}
-                authorMode={authorMode}
                 format={format}
-                onAuthorModeChange={handleAuthorModeChange}
                 onFormatChange={handleFormatChange}
               />
             )}

@@ -15,7 +15,7 @@ export default function TabSwitcher({
   ];
 
   return (
-    <nav className="flex border-b border-ui-border px-4">
+    <nav className="flex">
       {tabs.map((tab) => (
         <button
           key={tab.id}

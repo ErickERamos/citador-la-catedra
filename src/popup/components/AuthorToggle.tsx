@@ -12,12 +12,12 @@ export default function AuthorToggle({ mode, onChange }: AuthorToggleProps) {
   ];
 
   return (
-    <div className="flex rounded-md overflow-hidden border border-ui-border">
+    <div className="flex h-9 rounded-md overflow-hidden border border-ui-border">
       {options.map((opt) => (
         <button
           key={opt.id}
           onClick={() => onChange(opt.id)}
-          className={`flex-1 py-1.5 px-3 text-ui text-[10px] cursor-pointer transition-all ${
+          className={`flex-1 flex items-center justify-center px-3 text-ui text-[10px] cursor-pointer transition-all ${
             mode === opt.id
               ? "bg-primary-blue text-white"
               : "bg-bg-off-white text-charcoal hover:bg-ui-border/50"
