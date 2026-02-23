@@ -368,6 +368,19 @@ interface PageMetadata {
     return el?.content?.trim() || null;
   }
 
+  function getMultipleMetaContents(
+    attr: string,
+    value: string
+  ): string[] {
+    const els = document.querySelectorAll(`meta[${attr}="${value}"]`);
+    const contents: string[] = [];
+    for (const el of els) {
+      const content = el.getAttribute("content")?.trim();
+      if (content) contents.push(content);
+    }
+    return contents;
+  }
+
   setIfEmpty("title", getMetaContent("property", "og:title") as string);
   setIfEmpty(
     "siteName",
@@ -394,44 +407,89 @@ interface PageMetadata {
   const ogType = getMetaContent("property", "og:type");
   if (ogType) setIfEmpty("sourceType", mapSourceType(ogType));
 
-  // article:author (can be name or URL)
+  // ═══════════════════════════════════════════════════
+  // LEVEL 3: Authors Extraction (Robust)
+  // ═══════════════════════════════════════════════════
+  
+  // 3.1 Academic Meta Tags (High priority, often multiple per page)
   if (metadata.authors.length === 0) {
-    const articleAuthor = getMetaContent("property", "article:author");
-    if (articleAuthor && !articleAuthor.startsWith("http")) {
-      setIfEmpty("authors", [
-        { name: articleAuthor, type: guessAuthorType(articleAuthor) },
-      ]);
-    }
-  }
+    const academicCandidates = [
+      { attr: "name", value: "citation_author" },
+      { attr: "name", value: "DC.creator" },
+      { attr: "name", value: "DC.contributor.author" },
+      { attr: "name", value: "eprints.creators_name" },
+    ];
 
-  // ═══════════════════════════════════════════════════
-  // LEVEL 3: Standard meta tags
-  // ═══════════════════════════════════════════════════
-  const metaNameCandidates = [
-    { name: "author", field: "authors" as const },
-    { name: "DC.creator", field: "authors" as const },
-    { name: "citation_author", field: "authors" as const },
-  ];
-  for (const candidate of metaNameCandidates) {
-    if (metadata.authors.length === 0) {
-      const val = getMetaContent("name", candidate.name);
-      if (val) {
-        // Some pages list multiple authors comma-separated
-        const names = val.includes(";")
-          ? val.split(";")
-          : val.includes(",") && val.split(",").length <= 4
-            ? val.split(",")
-            : [val];
+    for (const { attr, value } of academicCandidates) {
+      if (metadata.authors.length > 0) break;
+      const contents = getMultipleMetaContents(attr, value);
+      if (contents.length > 0) {
         setIfEmpty(
           "authors",
-          names.map((n) => ({
-            name: n.trim(),
-            type: guessAuthorType(n.trim()),
+          contents.map((c) => ({
+            name: c,
+            type: guessAuthorType(c),
           }))
         );
       }
     }
   }
+
+  // 3.2 Open Graph Article Author (Can be multiple, sometimes URLs)
+  if (metadata.authors.length === 0) {
+    const ogAuthors = getMultipleMetaContents("property", "article:author");
+    const validOgAuthors = ogAuthors.filter((a) => !a.startsWith("http"));
+    if (validOgAuthors.length > 0) {
+      setIfEmpty(
+        "authors",
+        validOgAuthors.map((a) => ({
+          name: a,
+          type: guessAuthorType(a),
+        }))
+      );
+    }
+  }
+
+  // 3.3 Generic Author Meta Tag (Fallback, often single string requiring parsing)
+  if (metadata.authors.length === 0) {
+    const genericAuthor = getMetaContent("name", "author");
+    if (genericAuthor) {
+      // Intelligent parsing for single string
+      let names: string[] = [genericAuthor];
+      
+      if (genericAuthor.includes(";")) {
+        // Semicolon is a strong delimiter
+        names = genericAuthor.split(";");
+      } else if (genericAuthor.includes(",")) {
+        // Comma is ambiguous (could be delimiter or "Last, First")
+        const commaParts = genericAuthor.split(",");
+        
+        if (commaParts.length === 2) {
+          // Exactly 1 comma (2 parts) -> Assume "Last, First" format, DO NOT SPLIT
+          names = [genericAuthor];
+        } else if (commaParts.length > 2) {
+          // If 3+ commas, it could be multiple authors "A, B, C, D" or "Last1, First1, Last2, First2"
+          // We split by comma as a best effort
+          names = commaParts;
+        }
+      }
+
+      setIfEmpty(
+        "authors",
+        names
+          .map((n) => n.trim())
+          .filter((n) => n.length > 0)
+          .map((n) => ({
+            name: n,
+            type: guessAuthorType(n),
+          }))
+      );
+    }
+  }
+
+  // ═══════════════════════════════════════════════════
+  // LEVEL 4: Standard meta tags (Dates, etc.)
+  // ═══════════════════════════════════════════════════
 
   const dateCandidates = [
     "publication_date",
