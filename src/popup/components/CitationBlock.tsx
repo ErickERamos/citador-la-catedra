@@ -69,7 +69,7 @@ export default function CitationBlock({
           <span className="font-brand font-bold text-charcoal/60 text-[10px] whitespace-nowrap min-w-[70px]">
             {label}
           </span>
-          <p className="citation-text text-[13px] text-rich-black truncate flex-1">
+          <p className="citation-text text-[14px] text-rich-black truncate flex-1">
             {plainText}
           </p>
         </div>
@@ -141,7 +141,7 @@ export default function CitationBlock({
         
         <button
           onClick={handleCopy}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-ui text-[10px] cursor-pointer
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs cursor-pointer
             border transition-all ${
               copied
                 ? "border-action-cyan bg-action-cyan/10 text-action-cyan copy-success"
@@ -181,11 +181,11 @@ export default function CitationBlock({
       >
         {html ? (
           <p
-            className="citation-text text-[13px] text-rich-black leading-relaxed break-words"
+            className="citation-text text-[14px] text-rich-black leading-relaxed break-words"
             dangerouslySetInnerHTML={{ __html: html }}
           />
         ) : (
-          <p className="citation-text text-[13px] text-rich-black leading-relaxed break-words">
+          <p className="citation-text text-[14px] text-rich-black leading-relaxed break-words">
             {plainText}
           </p>
         )}
