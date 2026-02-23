@@ -2,8 +2,8 @@
 
 ## 1. Preparación de Archivos
 
-- [ ] **Generar ZIP**: Ejecuta `npm run package`. El archivo se creará en `release/citador-la-catedra-v1.0.0.zip`.
-- [ ] **Verificar Manifest**: Asegúrate de que `manifest.json` tenga la versión correcta (`1.0.0`) y descripción ≤132 caracteres.
+- [ ] **Generar ZIP**: Ejecuta `npm run package`. El archivo se creará en `release/citador-la-catedra-v1.0.1.zip`.
+- [ ] **Verificar Manifest**: Asegúrate de que `manifest.json` tenga la versión correcta (`1.0.1`) y descripción ≤132 caracteres.
 - [ ] **Política de Privacidad**: Sube el archivo `PRIVACY_POLICY.md` a una URL pública (p. ej. GitHub Gist o GitHub Pages). Copia el enlace.
 
 ## 2. Crear Assets Visuales
@@ -20,7 +20,7 @@ Necesitas crear las siguientes imágenes y guardarlas en una carpeta `store-asse
 
 1. Ve a [Chrome Developer Dashboard](https://chrome.google.com/webstore/devconsole).
 2. Haz clic en **"Nuevo elemento"** (New Item).
-3. Sube el archivo `release/citador-la-catedra-v1.0.0.zip`.
+3. Sube el archivo `release/citador-la-catedra-v1.0.1.zip`.
 
 ## 4. Completar Información de la Tienda
 

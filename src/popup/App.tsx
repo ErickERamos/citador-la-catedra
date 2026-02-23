@@ -88,7 +88,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col h-[600px]">
+    <div className="flex flex-col h-[520px]">
       <Header />
 
       {status === "loading" && <LoadingSkeleton />}

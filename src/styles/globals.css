@@ -18,7 +18,7 @@
 html,
 body {
   width: 600px;
-  height: 600px;
+  height: 520px;
   margin: 0;
   padding: 0;
   background-color: var(--color-bg-off-white);

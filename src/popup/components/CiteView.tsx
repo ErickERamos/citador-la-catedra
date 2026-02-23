@@ -40,7 +40,7 @@ export default function CiteView({
                 title={reliability.message}
               >
                 <div
-                  className={`flex items-center justify-center gap-2 px-3.5 py-2 rounded-md border font-body ${
+                  className={`flex items-center justify-center gap-2 h-8 px-3.5 rounded-md border font-body ${
                     reliability.color === "green"
                       ? "bg-green-100 border-green-300 text-green-700"
                       : reliability.color === "yellow"
@@ -85,7 +85,7 @@ export default function CiteView({
               <select
                 value={format}
                 onChange={(e) => onFormatChange(e.target.value as CitationFormat)}
-                className="w-full h-8 appearance-none bg-white border border-bg-off-white hover:border-action-cyan/50 rounded-md px-2.5 pr-7 text-xs text-rich-black font-ui focus:outline-none focus:border-action-cyan focus:ring-1 focus:ring-action-cyan/20 transition-all cursor-pointer flex items-center"
+                className="w-full h-8 appearance-none bg-white border border-ui-border hover:border-action-cyan/50 rounded-md px-2.5 pr-7 text-xs text-rich-black font-ui focus:outline-none focus:border-action-cyan focus:ring-1 focus:ring-action-cyan/20 transition-all cursor-pointer flex items-center"
               >
                 {Object.entries(FORMAT_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>

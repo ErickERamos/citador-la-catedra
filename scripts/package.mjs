@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import { existsSync, mkdirSync, rmSync } from "fs";
+import { existsSync, mkdirSync, rmSync, readFileSync } from "fs";
 import { resolve, dirname, join } from "path";
 import { fileURLToPath } from "url";
 
@@ -13,7 +13,8 @@ if (!existsSync(releaseDir)) {
   mkdirSync(releaseDir, { recursive: true });
 }
 
-const zipName = "citador-la-catedra-v1.0.0.zip";
+const pkg = JSON.parse(readFileSync(join(rootDir, "package.json"), "utf-8"));
+const zipName = `citador-la-catedra-v${pkg.version}.zip`;
 const zipPath = join(releaseDir, zipName);
 
 // Clean previous release
