@@ -26,35 +26,30 @@ export default function CiteView({
 }: CiteViewProps) {
   return (
     <div className="p-4 space-y-5">
-      {/* Format Selector */}
-      <div>
-        <label className="text-ui text-[10px] text-charcoal/60 mb-1.5 block">
-          Formato
-        </label>
-        <div className="relative">
-          <select
-            value={format}
-            onChange={(e) => onFormatChange(e.target.value as CitationFormat)}
-            className="w-full h-9 appearance-none bg-white border border-bg-off-white hover:border-action-cyan/50 rounded-md px-3 text-xs text-rich-black font-ui focus:outline-none focus:border-action-cyan focus:ring-1 focus:ring-action-cyan/20 transition-all cursor-pointer flex items-center"
-          >
-            {Object.entries(FORMAT_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-charcoal/40">
-            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
-        </div>
-      </div>
-
       {/* Reference list entry */}
       <CitationBlock
         label="Referencia"
         badge={FORMAT_LABELS[format]}
+        rightContent={
+          <div className="relative w-36 shrink-0">
+            <select
+              value={format}
+              onChange={(e) => onFormatChange(e.target.value as CitationFormat)}
+              className="w-full h-8 appearance-none bg-white border border-bg-off-white hover:border-action-cyan/50 rounded-md px-2.5 pr-7 text-xs text-rich-black font-ui focus:outline-none focus:border-action-cyan focus:ring-1 focus:ring-action-cyan/20 transition-all cursor-pointer flex items-center"
+            >
+              {Object.entries(FORMAT_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-charcoal/40">
+              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+        }
         plainText={citation.referenceList}
         html={citation.referenceListHtml}
         variant="card"

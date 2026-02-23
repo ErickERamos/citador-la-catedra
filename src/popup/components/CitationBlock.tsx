@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 interface CitationBlockProps {
   label: string;
   badge?: string;
+  /** Optional content to show on the right of the header (card variant only) */
+  rightContent?: ReactNode;
   /** Plain text version for copy */
   plainText: string;
   /** HTML version for display (optional, falls back to plainText) */
@@ -14,6 +16,7 @@ interface CitationBlockProps {
 export default function CitationBlock({
   label,
   badge,
+  rightContent,
   plainText,
   html,
   variant = "card",
@@ -127,15 +130,18 @@ export default function CitationBlock({
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        <span className="font-brand font-bold text-rich-black text-xs">
-          {label}
-        </span>
-        {badge && (
-          <span className="px-1.5 py-0.5 bg-action-cyan/15 text-action-cyan text-[9px] font-ui font-semibold uppercase rounded">
-            {badge}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="font-brand font-bold text-rich-black text-xs">
+            {label}
           </span>
-        )}
+          {badge && (
+            <span className="px-1.5 py-0.5 bg-action-cyan/15 text-action-cyan text-[9px] font-ui font-semibold uppercase rounded">
+              {badge}
+            </span>
+          )}
+        </div>
+        {rightContent}
       </div>
 
       <div
