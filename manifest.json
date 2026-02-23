@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Citador La Cátedra",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Genera citas en formato APA 7ma edición desde cualquier página web. Herramienta académica de La Cátedra.",
   "permissions": ["activeTab", "scripting", "storage"],
   "action": {
