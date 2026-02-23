@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import type {
   PageMetadata,
   AuthorDisplayMode,
-  CitationResult,
+  CitationFormat,
 } from "../lib/types";
 import { CitationGenerator } from "../lib/citation-generator";
 import Header from "./components/Header";
@@ -16,24 +16,26 @@ type Status = "loading" | "success" | "error";
 
 export default function App() {
   const [metadata, setMetadata] = useState<PageMetadata | null>(null);
-  const [citation, setCitation] = useState<CitationResult | null>(null);
   const [authorMode, setAuthorMode] = useState<AuthorDisplayMode>("person");
+  const [format, setFormat] = useState<CitationFormat>("apa7");
   const [activeTab, setActiveTab] = useState<Tab>("citar");
   const [status, setStatus] = useState<Status>("loading");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Load saved author mode preference
+  // Load saved preferences
   useEffect(() => {
-    chrome.storage.local.get("authorMode", (result) => {
+    chrome.storage.local.get(["authorMode", "format"], (result) => {
       if (result.authorMode) {
         setAuthorMode(result.authorMode as AuthorDisplayMode);
+      }
+      if (result.format) {
+        setFormat(result.format as CitationFormat);
       }
     });
   }, []);
 
   // Extract metadata on mount
   useEffect(() => {
-    setStatus("loading");
     chrome.runtime.sendMessage(
       { action: "extract-metadata" },
       (response) => {
@@ -58,22 +60,24 @@ export default function App() {
     );
   }, []);
 
-  // Re-generate citation whenever metadata or author mode changes
-  const regenerateCitation = useCallback(() => {
+  // Re-generate citation whenever metadata, author mode, or format changes
+  const citation = useMemo(() => {
     if (metadata) {
-      const result = CitationGenerator.generate(metadata, authorMode);
-      setCitation(result);
+      return CitationGenerator.generate(metadata, authorMode, format);
     }
-  }, [metadata, authorMode]);
-
-  useEffect(() => {
-    regenerateCitation();
-  }, [regenerateCitation]);
+    return null;
+  }, [metadata, authorMode, format]);
 
   // Handle author mode toggle
   const handleAuthorModeChange = (mode: AuthorDisplayMode) => {
     setAuthorMode(mode);
     chrome.storage.local.set({ authorMode: mode });
+  };
+
+  // Handle format change
+  const handleFormatChange = (newFormat: CitationFormat) => {
+    setFormat(newFormat);
+    chrome.storage.local.set({ format: newFormat });
   };
 
   // Handle metadata edit save
@@ -101,7 +105,9 @@ export default function App() {
               <CiteView
                 citation={citation}
                 authorMode={authorMode}
+                format={format}
                 onAuthorModeChange={handleAuthorModeChange}
+                onFormatChange={handleFormatChange}
               />
             )}
 

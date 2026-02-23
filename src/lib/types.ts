@@ -16,6 +16,17 @@ export interface PageMetadata {
 
 export type AuthorDisplayMode = "person" | "institutional";
 
+export type CitationFormat =
+  | "apa7"
+  | "mla"
+  | "chicago"
+  | "harvard"
+  | "une-iso-690"
+  | "ieee"
+  | "vancouver"
+  | "iso-690"
+  | "latino";
+
 export interface CitationResult {
   /** Full APA 7 reference list entry (plain text) */
   referenceList: string;
