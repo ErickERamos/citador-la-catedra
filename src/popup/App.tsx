@@ -97,7 +97,7 @@ export default function App() {
 
       {status === "success" && metadata && (
         <>
-          <PageInfo title={metadata.title} sourceType={metadata.sourceType} reliability={metadata.reliability} />
+          <PageInfo title={metadata.title} sourceType={metadata.sourceType} />
 
           <div className="flex items-center border-b border-ui-border px-4 gap-4">
             <TabSwitcher activeTab={activeTab} onTabChange={setActiveTab} />
@@ -112,6 +112,7 @@ export default function App() {
                 citation={citation}
                 format={format}
                 onFormatChange={handleFormatChange}
+                reliability={metadata.reliability}
               />
             )}
 
