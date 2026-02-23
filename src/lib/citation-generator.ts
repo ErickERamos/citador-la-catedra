@@ -84,9 +84,11 @@ export class CitationGenerator {
        
        // Segment 3 is empty
     } else {
-       // Author in pos 1
-       segment1 = `${authorStr}.`;
-       segment1H = `${this.escapeHtml(authorStr)}.`;
+       // Author in pos 1 (avoid double period if already ends with one)
+       segment1 = authorStr.endsWith(".") ? authorStr : `${authorStr}.`;
+       segment1H = authorStr.endsWith(".")
+         ? this.escapeHtml(authorStr)
+         : `${this.escapeHtml(authorStr)}.`;
        
        segment2 = datePart;
        segment2H = this.escapeHtml(datePart);
