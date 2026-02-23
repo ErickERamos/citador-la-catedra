@@ -557,20 +557,34 @@ interface PageMetadata {
   // ═══════════════════════════════════════════════════
   function calculateReliabilityScore(meta: PageMetadata) {
     let score = 0.0;
+    const reasons: string[] = [];
 
     // 1. URL Analysis (Max +3.0)
     const hostname = window.location.hostname;
-    if (/\.(edu|gov|gob\.do|edu\.do|ac\.uk)$/i.test(hostname)) score += 3.0;
-    else if (/\.(org|int)$/i.test(hostname)) score += 2.0;
-    else if (/\.(com|net|co)$/i.test(hostname)) score += 1.0;
+    if (/\.(edu|gov|gob\.do|edu\.do|ac\.uk)$/i.test(hostname)) {
+      score += 3.0;
+      reasons.push("Dominio académico/gubernamental (+3.0)");
+    } else if (/\.(org|int)$/i.test(hostname)) {
+      score += 2.0;
+      reasons.push("Dominio institucional (.org/.int) (+2.0)");
+    } else if (/\.(com|net|co)$/i.test(hostname)) {
+      score += 1.0;
+      reasons.push("Dominio comercial (+1.0)");
+    }
 
     // 2. Academic Meta Tags (Max +4.0)
-    if (document.querySelector('meta[name="citation_doi"], meta[name="DC.identifier"]')) score += 2.0;
-    if (document.querySelector('meta[name="citation_author"]')) score += 1.0;
-    if (document.querySelector('meta[name="citation_journal_title"], meta[name="citation_publisher"]')) score += 1.0;
+    let academicScore = 0.0;
+    if (document.querySelector('meta[name="citation_doi"], meta[name="DC.identifier"]')) academicScore += 2.0;
+    if (document.querySelector('meta[name="citation_author"]')) academicScore += 1.0;
+    if (document.querySelector('meta[name="citation_journal_title"], meta[name="citation_publisher"]')) academicScore += 1.0;
+    if (academicScore > 0) {
+      score += academicScore;
+      reasons.push(`Metadatos académicos (+${academicScore.toFixed(1)})`);
+    }
 
     // 3. Editorial Meta Tags (Max +2.0)
-    if (document.querySelector('meta[name="author"], meta[property="article:author"]')) score += 1.0;
+    let editorialScore = 0.0;
+    if (document.querySelector('meta[name="author"], meta[property="article:author"]')) editorialScore += 1.0;
     
     let hasJsonLdDate = false;
     try {
@@ -589,22 +603,38 @@ interface PageMetadata {
       // ignore JSON errors
     }
     
-    if (document.querySelector('meta[property="article:published_time"]') || hasJsonLdDate) score += 1.0;
+    if (document.querySelector('meta[property="article:published_time"]') || hasJsonLdDate) editorialScore += 1.0;
+    
+    if (editorialScore > 0) {
+      score += editorialScore;
+      reasons.push(`Datos editoriales (+${editorialScore.toFixed(1)})`);
+    }
 
     // 4. DOM Heuristics (Max +1.0)
     const bodyText = document.body.innerText.substring(0, 5000); // Check first 5000 chars for performance
-    if (/(bibliograf[ií]a|referencias|works cited|referencias bibliogr[aá]ficas)/i.test(bodyText)) score += 1.0;
+    if (/(bibliograf[ií]a|referencias|works cited|referencias bibliogr[aá]ficas)/i.test(bodyText)) {
+      score += 1.0;
+      reasons.push("Referencias en texto (+1.0)");
+    }
 
     // 5. Penalties
-    if (meta.authors.length === 0) score -= 2.0;
-    if (!meta.datePublished) score -= 1.5;
+    let penaltyScore = 0.0;
+    if (meta.authors.length === 0) {
+      penaltyScore -= 2.0;
+      reasons.push("Falta autor (-2.0)");
+    }
+    if (!meta.datePublished) {
+      penaltyScore -= 1.5;
+      reasons.push("Falta fecha (-1.5)");
+    }
+    score += penaltyScore;
 
     // Clamp between 1.0 and 10.0
     score = Math.max(1.0, Math.min(10.0, score));
 
     // Determine color and message
     let color: "green" | "yellow" | "red" = "red";
-    let message = "Faltan datos clave (autor/fecha). No recomendada para investigación formal.";
+    let message = "";
 
     if (score >= 8.0) {
       color = "green";
@@ -612,6 +642,13 @@ interface PageMetadata {
     } else if (score >= 5.0) {
       color = "yellow";
       message = "Fuente periodística o de divulgación. Verifica el sesgo o la autoría.";
+    } else {
+      color = "red";
+      if (meta.authors.length === 0 || !meta.datePublished) {
+        message = "Faltan datos clave (autor/fecha). No recomendada para investigación formal.";
+      } else {
+        message = "Metadatos académicos insuficientes. Verifica la fiabilidad manualmente.";
+      }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -619,6 +656,7 @@ interface PageMetadata {
       score: Math.round(score * 10) / 10,
       color,
       message,
+      reasons,
     };
   }
 

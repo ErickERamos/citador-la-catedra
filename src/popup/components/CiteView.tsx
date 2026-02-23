@@ -40,7 +40,7 @@ export default function CiteView({
                 title={reliability.message}
               >
                 <div
-                  className={`flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-md border ${
+                  className={`flex items-center justify-center gap-2 px-3.5 py-2 rounded-md border font-body ${
                     reliability.color === "green"
                       ? "bg-green-100 border-green-300 text-green-700"
                       : reliability.color === "yellow"
@@ -48,22 +48,36 @@ export default function CiteView({
                         : "bg-red-100 border-red-300 text-red-700"
                   }`}
                 >
-                  <span className="text-xs font-bold font-brand">
+                  <span className="text-sm font-bold">
                     {reliability.score.toFixed(1)}
                   </span>
-                  <span className="text-[9px] font-ui font-semibold uppercase tracking-wide">
-                    Fiabilidad
+                  <span className=" mx-auto text-xs font-semibold tracking-wide">
+                    Fiabilidad de la fuente
                   </span>
                 </div>
-                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-48 p-2 bg-rich-black text-white text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none shadow-lg">
-                  <div className="font-bold mb-1">
+                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-56 p-2.5 bg-rich-black text-white text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none shadow-lg">
+                  <div className="font-bold mb-1.5 border-b border-white/20 pb-1">
                     {reliability.color === "green"
-                      ? "Fiabilidad Alta"
+                      ? "🟢 Fiabilidad Alta"
                       : reliability.color === "yellow"
-                        ? "Fiabilidad Media"
-                        : "Fiabilidad Baja"}
+                        ? "🟡 Fiabilidad Media"
+                        : "🔴 Fiabilidad Baja"}
                   </div>
-                  {reliability.message}
+                  <p className="mb-2 text-white/90 leading-tight">
+                    {reliability.message}
+                  </p>
+                  {reliability.reasons && reliability.reasons.length > 0 && (
+                    <ul className="space-y-1 text-[11px] text-white/80">
+                      {reliability.reasons.map((reason, idx) => (
+                        <li key={idx} className="flex items-start gap-1.5">
+                          <span className={reason.includes("-") ? "text-red-400" : "text-green-400"}>
+                            {reason.includes("-") ? "✗" : "✓"}
+                          </span>
+                          <span>{reason}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             )}

@@ -9,6 +9,7 @@ export interface ReliabilityScore {
   score: number;
   color: "green" | "yellow" | "red";
   message: string;
+  reasons?: string[];
 }
 
 export interface PageMetadata {
