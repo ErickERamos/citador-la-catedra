@@ -12,19 +12,25 @@ export default function AuthorToggle({ mode, onChange }: AuthorToggleProps) {
   ];
 
   return (
-    <div className="flex h-9 rounded-md overflow-hidden border border-ui-border">
-      {options.map((opt) => (
-        <button
-          key={opt.id}
-          onClick={() => onChange(opt.id)}
-          className={`flex-1 flex items-center justify-center px-3 text-ui text-[10px] cursor-pointer transition-all ${
-            mode === opt.id
-              ? "bg-primary-blue text-white"
-              : "bg-bg-off-white text-charcoal hover:bg-ui-border/50"
-          }`}
-        >
-          {opt.label}
-        </button>
+    <div className="flex items-center gap-1">
+      {options.map((opt, i) => (
+        <span key={opt.id} className="flex items-center gap-1">
+          {i > 0 && (
+            <span className="text-charcoal/30 text-[10px] font-ui" aria-hidden>
+              
+            </span>
+          )}
+          <button
+            onClick={() => onChange(opt.id)}
+            className={`tab-link text-ui py-2.5 px-3 cursor-pointer transition-colors ${
+              mode === opt.id
+                ? "active text-primary-blue"
+                : "text-charcoal/60 hover:text-charcoal"
+            }`}
+          >
+            {opt.label}
+          </button>
+        </span>
       ))}
     </div>
   );
