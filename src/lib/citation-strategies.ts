@@ -179,8 +179,8 @@ export class Apa7Strategy implements CitationStrategy {
     let ref = "";
     let refHtml = "";
 
-    const authorPart = authors ? `${authors}.` : `${title}.`;
-    const authorPartHtml = authors ? `${CitationHelpers.escapeHtml(authors)}.` : (isPeriodical ? `${CitationHelpers.escapeHtml(title)}.` : `<em>${CitationHelpers.escapeHtml(title)}</em>.`);
+    const authorPart = authors ? (authors.endsWith(".") ? authors : `${authors}.`) : `${title}.`;
+    const authorPartHtml = authors ? (authors.endsWith(".") ? CitationHelpers.escapeHtml(authors) : `${CitationHelpers.escapeHtml(authors)}.`) : (isPeriodical ? `${CitationHelpers.escapeHtml(title)}.` : `<em>${CitationHelpers.escapeHtml(title)}</em>.`);
     
     const datePart = ` (${dateStr}).`;
     
@@ -362,8 +362,9 @@ export class UneIso690Strategy implements CitationStrategy {
     let refHtml = "";
 
     if (authors) {
-        ref += `${authors}. `;
-        refHtml += `<span style="font-variant:small-caps">${CitationHelpers.escapeHtml(authors)}</span>. `;
+        const authPart = authors.endsWith(".") ? authors : `${authors}.`;
+        ref += `${authPart} `;
+        refHtml += `<span style="font-variant:small-caps">${CitationHelpers.escapeHtml(authPart)}</span> `;
     }
 
     ref += `${title} [en línea]. `;
@@ -475,8 +476,9 @@ export class Iso690Strategy implements CitationStrategy {
     let refHtml = "";
 
     if (authors) {
-        ref += `${authors}. `;
-        refHtml += `<span style="font-variant:small-caps">${CitationHelpers.escapeHtml(authors)}</span>. `;
+        const authPart = authors.endsWith(".") ? authors : `${authors}.`;
+        ref += `${authPart} `;
+        refHtml += `<span style="font-variant:small-caps">${CitationHelpers.escapeHtml(authPart)}</span> `;
     }
 
     ref += `${title}. `;
