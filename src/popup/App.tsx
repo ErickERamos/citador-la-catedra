@@ -97,7 +97,7 @@ export default function App() {
 
       {status === "success" && metadata && (
         <>
-          <PageInfo title={metadata.title} sourceType={metadata.sourceType} />
+          <PageInfo title={metadata.title} sourceType={metadata.sourceType} reliability={metadata.reliability} />
 
           <div className="flex items-center border-b border-ui-border px-4 gap-4">
             <TabSwitcher activeTab={activeTab} onTabChange={setActiveTab} />

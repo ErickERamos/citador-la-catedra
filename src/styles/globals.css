@@ -29,6 +29,14 @@ body {
   line-height: 1.6;
 }
 
+/* Base tooltips styles */
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+}
+.group:hover .group-hover\:visible {
+  visibility: visible;
+}
+
 #root {
   width: 100%;
   min-height: 100%;

@@ -553,6 +553,76 @@ interface PageMetadata {
   }
 
   // ═══════════════════════════════════════════════════
+  // RELIABILITY SCORE
+  // ═══════════════════════════════════════════════════
+  function calculateReliabilityScore(meta: PageMetadata) {
+    let score = 0.0;
+
+    // 1. URL Analysis (Max +3.0)
+    const hostname = window.location.hostname;
+    if (/\.(edu|gov|gob\.do|edu\.do|ac\.uk)$/i.test(hostname)) score += 3.0;
+    else if (/\.(org|int)$/i.test(hostname)) score += 2.0;
+    else if (/\.(com|net|co)$/i.test(hostname)) score += 1.0;
+
+    // 2. Academic Meta Tags (Max +4.0)
+    if (document.querySelector('meta[name="citation_doi"], meta[name="DC.identifier"]')) score += 2.0;
+    if (document.querySelector('meta[name="citation_author"]')) score += 1.0;
+    if (document.querySelector('meta[name="citation_journal_title"], meta[name="citation_publisher"]')) score += 1.0;
+
+    // 3. Editorial Meta Tags (Max +2.0)
+    if (document.querySelector('meta[name="author"], meta[property="article:author"]')) score += 1.0;
+    
+    let hasJsonLdDate = false;
+    try {
+      const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+      for (const script of scripts) {
+        const data = JSON.parse(script.textContent || "");
+        const items = Array.isArray(data) ? data : [data];
+        for (const item of items) {
+          const nodes = item["@graph"] ? [...item["@graph"], item] : [item];
+          for (const node of nodes) {
+            if (node.datePublished) hasJsonLdDate = true;
+          }
+        }
+      }
+    } catch {
+      // ignore JSON errors
+    }
+    
+    if (document.querySelector('meta[property="article:published_time"]') || hasJsonLdDate) score += 1.0;
+
+    // 4. DOM Heuristics (Max +1.0)
+    const bodyText = document.body.innerText.substring(0, 5000); // Check first 5000 chars for performance
+    if (/(bibliograf[ií]a|referencias|works cited|referencias bibliogr[aá]ficas)/i.test(bodyText)) score += 1.0;
+
+    // 5. Penalties
+    if (meta.authors.length === 0) score -= 2.0;
+    if (!meta.datePublished) score -= 1.5;
+
+    // Clamp between 1.0 and 10.0
+    score = Math.max(1.0, Math.min(10.0, score));
+
+    // Determine color and message
+    let color: "green" | "yellow" | "red" = "red";
+    let message = "Faltan datos clave (autor/fecha). No recomendada para investigación formal.";
+
+    if (score >= 8.0) {
+      color = "green";
+      message = "Fuente óptima para trabajos académicos.";
+    } else if (score >= 5.0) {
+      color = "yellow";
+      message = "Fuente periodística o de divulgación. Verifica el sesgo o la autoría.";
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (meta as any).reliability = {
+      score: Math.round(score * 10) / 10,
+      color,
+      message,
+    };
+  }
+
+  // ═══════════════════════════════════════════════════
   // LEVEL 5: Final Fallbacks
   // ═══════════════════════════════════════════════════
   setIfEmpty("title", document.title);
@@ -571,6 +641,8 @@ interface PageMetadata {
   if (metadata.sourceType === "unknown") {
     metadata.sourceType = "webpage";
   }
+
+  calculateReliabilityScore(metadata);
 
   // Store result on window so the background worker can read it
   // via a separate chrome.scripting.executeScript({ func }) call.

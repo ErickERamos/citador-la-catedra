@@ -5,6 +5,12 @@ export interface AuthorInfo {
   type: "person" | "organization";
 }
 
+export interface ReliabilityScore {
+  score: number;
+  color: "green" | "yellow" | "red";
+  message: string;
+}
+
 export interface PageMetadata {
   title: string;
   authors: AuthorInfo[];
@@ -12,6 +18,7 @@ export interface PageMetadata {
   siteName: string | null;
   url: string;
   sourceType: SourceType;
+  reliability?: ReliabilityScore;
 }
 
 export type AuthorDisplayMode = "person" | "institutional";
